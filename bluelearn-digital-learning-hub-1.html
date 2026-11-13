@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="An interactive all-in-one digital learning hub.">
+  <title>BlueLearn | Digital Learning Hub</title>
+
+  <style>
+    :root {
+      --navy: #102b52;
+      --blue: #2563eb;
+      --sky: #eaf3ff;
+      --ink: #17243a;
+      --muted: #68758a;
+      --line: #e5eaf2;
+      --surface: #ffffff;
+      --bg: #f5f8fd;
+      --radius: 20px;
+      --shadow: 0 12px 35px rgba(25, 55, 100, .08);
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px clamp(18px, 5vw, 64px);
+      background: rgba(255,255,255,.94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(14px);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--navy);
+      font-weight: 850;
+      letter-spacing: -.5px;
+      font-size: 1.1rem;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #60a5fa);
+    }
+    nav { display: flex; gap: 8px; flex-wrap: wrap; }
+    nav a {
+      text-decoration: none;
+      color: #526078;
+      padding: 9px 12px;
+      border-radius: 10px;
+      font-size: .9rem;
+      font-weight: 650;
+    }
+    nav a:hover { color: var(--blue); background: var(--sky); }
+
+    .hero {
+      margin: 28px auto 0;
+      width: min(1200px, calc(100% - 36px));
+      min-height: 300px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 28px;
+      padding: clamp(28px, 6vw, 68px);
+      color: white;
+      background:
+        radial-gradient(circle at 85% 20%, rgba(125,190,255,.55), transparent 26%),
+        radial-gradient(circle at 70% 100%, rgba(65,130,240,.45), transparent 35%),
+        linear-gradient(120deg, #102b52, #1e55a0 65%, #347de0);
+      box-shadow: var(--shadow);
+    }
+    .hero::after {
+      content: "✦";
+      position: absolute;
+      right: 9%;
+      bottom: 5%;
+      font-size: clamp(110px, 20vw, 230px);
+      color: rgba(255,255,255,.10);
+      transform: rotate(-12deg);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 99px;
+      color: #e4efff;
+      font-size: .78rem;
+      font-weight: 750;
+      letter-spacing: 1.3px;
+      text-transform: uppercase;
+    }
+    .hero h1 {
+      max-width: 680px;
+      margin: 18px 0 12px;
+      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      line-height: 1.02;
+      letter-spacing: -2px;
+    }
+    .hero p {
+      max-width: 560px;
+      color: #e0ecff;
+      line-height: 1.7;
+      font-size: 1.02rem;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 18px;
+      font-weight: 750;
+      text-decoration: none;
+    }
+    .btn-primary { background: white; color: var(--navy); }
+    .btn-outline { color: white; border: 1px solid rgba(255,255,255,.45); background: transparent; }
+
+    .container { width: min(1200px, calc(100% - 36px)); margin: 54px auto; }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .section-heading h2 { margin: 0 0 7px; color: var(--navy); font-size: clamp(1.5rem, 3vw, 2rem); }
+    .section-heading p { margin: 0; color: var(--muted); line-height: 1.5; }
+    .search {
+      width: min(280px, 100%);
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: white;
+      outline: none;
+    }
+    .search:focus { border-color: var(--blue); box-shadow: 0 0 0 3px #2563eb1c; }
+
+    .filters { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 22px; }
+    .filter {
+      border: 1px solid var(--line);
+      background: white;
+      color: #536078;
+      padding: 9px 14px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: .86rem;
+    }
+    .filter.active { background: var(--navy); color: white; border-color: var(--navy); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .product-card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 5px 20px rgba(25,55,100,.04);
+      transition: transform .2s, box-shadow .2s;
+    }
+    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .thumb {
+      display: grid;
+      place-items: center;
+      min-height: 155px;
+      color: white;
+      font-size: 3rem;
+      background: linear-gradient(135deg, #1e40af, #60a5fa);
+    }
+    .thumb.game { background: linear-gradient(135deg, #0f766e, #5eead4); }
+    .thumb.gif { background: linear-gradient(135deg, #7c3aed, #c4b5fd); }
+    .thumb.quiz { background: linear-gradient(135deg, #c2410c, #fdba74); }
+    .card-content { padding: 18px; }
+    .tag {
+      display: inline-block;
+      padding: 5px 9px;
+      border-radius: 99px;
+      color: #2454a6;
+      background: #eaf2ff;
+      font-size: .72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+    .card-content h3 { margin: 12px 0 7px; color: var(--navy); }
+    .card-content p { min-height: 44px; margin: 0 0 16px; color: var(--muted); font-size: .91rem; line-height: 1.55; }
+    .card-actions { display: flex; gap: 9px; }
+    .card-btn {
+      flex: 1;
+      border: 0;
+      border-radius: 10px;
+      padding: 10px;
+      color: white;
+      background: var(--blue);
+      font-weight: 750;
+    }
+    .card-btn.secondary { color: var(--navy); background: #edf3fc; }
+
+    .assistant-section {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      align-items: center;
+      padding: clamp(22px, 4vw, 42px);
+      border-radius: 24px;
+      background: #eaf2ff;
+    }
+    .assistant-section h2 { color: var(--navy); font-size: 1.8rem; margin: 0 0 10px; }
+    .assistant-section p { color: #526783; line-height: 1.7; }
+    .assistant-panel {
+      min-height: 190px;
+      padding: 22px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: var(--shadow);
+    }
+    .assistant-panel .hint {
+      margin-top: 20px;
+      padding: 13px;
+      border-radius: 12px;
+      background: #f3f7fd;
+      color: #60718a;
+      font-size: .9rem;
+    }
+    .notice {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border: 1px dashed #9db8e2;
+      border-radius: 12px;
+      color: #385578;
+      background: #f5f9ff;
+      font-size: .88rem;
+      line-height: 1.6;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 28px 18px;
+      text-align: center;
+      color: #8190a5;
+      background: white;
+      border-top: 1px solid var(--line);
+      font-size: .86rem;
+    }
+
+    /* Content viewer: products open inside this page */
+    .viewer {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      padding: 18px;
+      background: rgba(8,20,40,.78);
+      align-items: center;
+      justify-content: center;
+    }
+    .viewer.open { display: flex; }
+    .viewer-box {
+      display: flex;
+      flex-direction: column;
+      width: min(1050px, 100%);
+      height: min(760px, 92vh);
+      overflow: hidden;
+      border-radius: 18px;
+      background: white;
+    }
+    .viewer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 13px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .viewer-head strong { color: var(--navy); }
+    .close {
+      border: 0;
+      border-radius: 9px;
+      padding: 8px 12px;
+      color: white;
+      background: var(--navy);
+      font-weight: 800;
+    }
+    .viewer-body { flex: 1; min-height: 0; background: #f5f8fd; }
+    .viewer-body iframe, .viewer-body video, .viewer-body img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      border: 0;
+      object-fit: contain;
+      background: #101827;
+    }
+    .viewer-body video { object-fit: contain; }
+
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .assistant-section { grid-template-columns: 1fr; }
+      .section-heading { align-items: stretch; flex-direction: column; }
+      .search { width: 100%; }
+    }
+    @media (max-width: 560px) {
+      .topbar { align-items: flex-start; flex-direction: column; }
+      nav { width: 100%; }
+      nav a { padding: 7px 9px; }
+      .grid { grid-template-columns: 1fr; }
+      .hero { margin-top: 16px; }
+      .container { margin: 40px auto; }
+    }
+  </style>
+
+  <!-- BOTPress:
+       1. Create and publish your bot in Botpress.
+       2. Open Webchat > Deploy Settings.
+       3. Copy the current Embed code from Botpress.
+       4. Paste the complete code below this comment, inside the HEAD.
+       Do not paste your Botpress secret/API key here.
+  -->
+</head>
+
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">✦</span>
+      <span>BlueLearn Hub</span>
+    </div>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#products">Explore</a>
+      <a href="#assistant">AI Helper</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <span class="eyebrow">One platform • Many possibilities</span>
+      <h1>Learn, explore<br>and create.</h1>
+      <p>
+        Welcome to your digital learning space. Watch videos, play learning
+        games, explore animations and ask our AI learning assistant for help.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#products">Explore products ↓</a>
+        <a class="btn btn-outline" href="#assistant">Meet the AI helper</a>
+      </div>
+    </section>
+
+    <section class="container" id="products">
+      <div class="section-heading">
+        <div>
+          <h2>Explore our digital products</h2>
+          <p>Choose a resource and use it without leaving this portal.</p>
+        </div>
+        <input class="search" id="searchInput" type="search"
+               placeholder="Search products..." aria-label="Search products">
+      </div>
+
+      <div class="filters" aria-label="Filter products">
+        <button class="filter active" data-filter="all">All</button>
+        <button class="filter" data-filter="video">Videos</button>
+        <button class="filter" data-filter="game">Games</button>
+        <button class="filter" data-filter="gif">GIF & Animation</button>
+        <button class="filter" data-filter="quiz">Quizzes</button>
+      </div>
+
+      <div class="grid" id="productGrid">
+
+        <!-- VIDEO CARD
+             Replace the sample YouTube embed URL with your video's embed URL.
+             Example: https://www.youtube.com/embed/VIDEO_ID
+        -->
+        <article class="product-card" data-category="video" data-title="Introduction video">
+          <div class="thumb">▶</div>
+          <div class="card-content">
+            <span class="tag">Video</span>
+            <h3>Introduction Video</h3>
+            <p>Watch an introduction to our learning topic.</p>
+            <div class="card-actions">
+              <button class="card-btn"
+                onclick="openViewer('Introduction Video',
+                'iframe',
+                'https://www.youtube-nocookie.com/embed/ysz5S6PUM-U')">
+                Watch now
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- GAME CARD
+             Upload your HTML5 game folder to GitHub, for example:
+             games/word-match/index.html
+             Then use: games/word-match/index.html
+        -->
+        <article class="product-card" data-category="game" data-title="Word matching game">
+          <div class="thumb game">🎮</div>
+          <div class="card-content">
+            <span class="tag">Game</span>
+            <h3>Word Matching Game</h3>
+            <p>Practise vocabulary through an interactive game.</p>
+            <div class="card-actions">
+              <button class="card-btn"
+                onclick="openViewer('Word Matching Game','iframe','games/word-match/index.html')">
+                Play now
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- GIF CARD
+             Upload your GIF to: assets/learning-animation.gif
+        -->
+        <article class="product-card" data-category="gif" data-title="Learning animation">
+          <div class="thumb gif">✨</div>
+          <div class="card-content">
+            <span class="tag">GIF & Animation</span>
+            <h3>Learning Animation</h3>
+            <p>Explore a short visual animation.</p>
+            <div class="card-actions">
+              <button class="card-btn"
+                onclick="openViewer('Learning Animation','image','assets/learning-animation.gif')">
+                View animation
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- QUIZ CARD
+             Upload your quiz as a self-contained HTML file, or use an
+             embed URL from a service that permits iframe embedding.
+        -->
+        <article class="product-card" data-category="quiz" data-title="Quick knowledge quiz">
+          <div class="thumb quiz">?</div>
+          <div class="card-content">
+            <span class="tag">Quiz</span>
+            <h3>Quick Knowledge Quiz</h3>
+            <p>Check what you have learned with a short quiz.</p>
+            <div class="card-actions">
+              <button class="card-btn"
+                onclick="openViewer('Quick Knowledge Quiz','iframe','quizzes/quick-quiz/index.html')">
+                Start quiz
+              </button>
+            </div>
+          </div>
+        </article>
+
+      </div>
+
+      <div class="notice">
+        <strong>For the team:</strong> The cards above are sample placeholders.
+        Replace the sample content and file paths with your own products.
+        HTML5 games and quizzes should be uploaded as folders containing their
+        own <code>index.html</code> and supporting files.
+      </div>
+    </section>
+
+    <section class="container" id="assistant">
+      <div class="assistant-section">
+        <div>
+          <span class="tag">Your learning companion</span>
+          <h2>Need a little help?</h2>
+          <p>
+            Ask our AI Learning Helper to explain a topic, guide you through
+            an activity or answer questions about the learning materials.
+          </p>
+          <p><strong>Tip:</strong> Use the chat button at the bottom-right
+            after the Botpress embed code has been installed.</p>
+        </div>
+        <div class="assistant-panel">
+          <h3 style="margin:0;color:#102b52;">AI Learning Helper 🤖</h3>
+          <p style="color:#68758a;line-height:1.6;">
+            Your digital assistant is ready to help once the Botpress
+            integration is connected.
+          </p>
+          <div class="hint">
+            Example: “Can you explain this topic in simple words?”
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <strong>BlueLearn Hub</strong><br>
+    An interactive digital learning space.<br>
+    <span id="year"></span> • Created by our learning team
+  </footer>
+
+  <!-- In-page viewer: opens embedded products without navigating away -->
+  <div class="viewer" id="viewer" role="dialog"
+       aria-modal="true" aria-label="Product viewer">
+    <div class="viewer-box">
+      <div class="viewer-head">
+        <strong id="viewerTitle">Product</strong>
+        <button class="close" onclick="closeViewer()" aria-label="Close viewer">✕ Close</button>
+      </div>
+      <div class="viewer-body" id="viewerBody"></div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // Product viewer: displays videos, games, quizzes and GIFs in this page.
+    function openViewer(title, type, source) {
+      const viewer = document.getElementById("viewer");
+      const body = document.getElementById("viewerBody");
+      document.getElementById("viewerTitle").textContent = title;
+      body.replaceChildren();
+
+      let element;
+      if (type === "image") {
+        element = document.createElement("img");
+        element.src = source;
+        element.alt = title;
+      } else if (type === "video") {
+        element = document.createElement("video");
+        element.src = source;
+        element.controls = true;
+        element.autoplay = true;
+      } else {
+        element = document.createElement("iframe");
+        element.src = source;
+        element.title = title;
+        element.allow = "autoplay; fullscreen; gamepad";
+        element.allowFullscreen = true;
+        element.loading = "lazy";
+        element.referrerPolicy = "strict-origin-when-cross-origin";
+      }
+
+      body.appendChild(element);
+      viewer.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeViewer() {
+      const viewer = document.getElementById("viewer");
+      const body = document.getElementById("viewerBody");
+      viewer.classList.remove("open");
+      body.replaceChildren(); // Stops video/audio when viewer closes.
+      document.body.style.overflow = "";
+    }
+
+    document.getElementById("viewer").addEventListener("click", (event) => {
+      if (event.target.id === "viewer") closeViewer();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") closeViewer();
+    });
+
+    // Category filters.
+    let activeFilter = "all";
+    const cards = [...document.querySelectorAll(".product-card")];
+    const searchInput = document.getElementById("searchInput");
+
+    function updateProducts() {
+      const term = searchInput.value.trim().toLowerCase();
+      cards.forEach(card => {
+        const categoryMatches =
+          activeFilter === "all" || card.dataset.category === activeFilter;
+        const textMatches =
+          card.dataset.title.toLowerCase().includes(term) ||
+          card.innerText.toLowerCase().includes(term);
+        card.style.display = categoryMatches && textMatches ? "" : "none";
+      });
+    }
+
+    document.querySelectorAll(".filter").forEach(button => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".filter").forEach(item =>
+          item.classList.remove("active")
+        );
+        button.classList.add("active");
+        activeFilter = button.dataset.filter;
+        updateProducts();
+      });
+    });
+
+    searchInput.addEventListener("input", updateProducts);
+  </script>
+</body>
+</html>

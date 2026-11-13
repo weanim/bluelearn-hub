@@ -452,20 +452,42 @@
              Upload your quiz as a self-contained HTML file, or use an
              embed URL from a service that permits iframe embedding.
         -->
-        <article class="product-card" data-category="quiz" data-title="Quick knowledge quiz">
-          <div class="thumb quiz">?</div>
-          <div class="card-content">
-            <span class="tag">Quiz</span>
-            <h3>Quick Knowledge Quiz</h3>
-            <p>Check what you have learned with a short quiz.</p>
-            <div class="card-actions">
-              <button class="card-btn"
-                onclick="openViewer('Quick Knowledge Quiz','iframe','quizzes/quick-quiz/index.html')">
-                Start quiz
-              </button>
-            </div>
-          </div>
-        </article>
+       <!-- QUIZ CARD -->
+<article class="product-card"
+    data-category="quiz"
+    data-title="ZEP Interactive Quiz">
+
+    <div class="card-content">
+
+        <span class="tag">Quiz</span>
+
+        <h3>ZEP Interactive Quiz</h3>
+
+        <p>Test your knowledge through an interactive quiz!</p>
+
+        <div style="width:100%; margin-top:15px;">
+            <iframe
+                src="https://quiz.zep.us/en/play/pdbPZv"
+                title="BlueLearn ZEP Quiz"
+                width="100%"
+                height="600"
+                style="border:0; border-radius:12px;"
+                allowfullscreen
+                loading="lazy">
+            </iframe>
+        </div>
+
+        <p style="margin-top:12px;">
+            If the quiz does not load,
+            <a href="https://quiz.zep.us/en/play/pdbPZv"
+               target="_blank"
+               rel="noopener noreferrer">
+                click here to play.
+            </a>
+        </p>
+
+    </div>
+</article>
 
       </div>
 

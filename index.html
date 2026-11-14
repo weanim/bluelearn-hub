@@ -661,12 +661,14 @@ function closeQuiz() {
     document.getElementById("quizViewer").style.display = "none";
 
     if (document.fullscreenElement) {
-        document.exitFullscreen();}}
+        document.exitFullscreen();}
+  }
 
 function fullscreenQuiz() {
     const viewer = document.getElementById("quizViewer");
 
     if (viewer.requestFullscreen) {
-        viewer.requestFullscreen();}}
+        viewer.requestFullscreen();}
+  }
 </body>
 </html>

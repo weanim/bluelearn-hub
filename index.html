@@ -655,20 +655,26 @@ href="https://quiz.zep.us/en/play/pdbPZv"
     searchInput.addEventListener("input", updateProducts);
   </script>
 function openQuiz() {
-    document.getElementById("quizViewer").style.display = "block";}
-
-function closeQuiz() {
-    document.getElementById("quizViewer").style.display = "none";
-
-    if (document.fullscreenElement) {
-        document.exitFullscreen();}
+    document.getElementById("quizViewer").style.display 
+  = "block";
   }
 
+function closeQuiz() {
+    document.getElementById("quizViewer").style.display 
+  = "none";
+
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    }
+}
+
 function fullscreenQuiz() {
-    const viewer = document.getElementById("quizViewer");
+    const viewer = 
+  document.getElementById("quizViewer");
 
     if (viewer.requestFullscreen) {
-        viewer.requestFullscreen();}
+        viewer.requestFullscreen();
+    }
   }
 </body>
 </html>
